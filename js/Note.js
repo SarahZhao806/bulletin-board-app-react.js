@@ -6,12 +6,14 @@ var Note = React.createClass({
         this.setState({editing: true});
     },
     save: function() {
-        var val = this.refs.newText.getDOMNode().value;
-        alert("ToDO: Save note value " + val);
+//        var val = this.refs.newText.getDOMNode().value;
+//        alert("ToDO: Save note value " + val);
+        this.props.onChange(this.refs.newText.getDOMNode().value,
+                           this.props.index);
         this.setState({editing: false});
     },
     remove: function() {
-        alert('removing note');
+        this.props.onRemove(this.props.index);
     },
     renderDisplay: function() {
         return (
@@ -45,5 +47,55 @@ var Note = React.createClass({
     }
 });
 
-React.render(<Note>Hello World</Note>, 
+var Board = React.createClass({
+    propTypes: {
+        count: function(props, propName) {
+            if(typeof props[propName] !== "number"){
+                return new Error("The count property must be a number");
+            }
+            if(props[propName] > 100){
+                return new Error('Creating ' + props[propName] + " notes is ridiculous.")
+            }
+        }
+    },
+    getInitialState: function() {
+        return {
+            notes: [
+            ]
+        };
+    },
+    
+    add: function(text) {
+        var arr = this.state.notes;
+        arr.push(text);
+        this.setState({notes:arr});
+    },
+    update: function(newText, i) {
+        var arr = this.state.notes;
+        arr[i] = newText;
+        this.setState({notes:arr});
+    },
+    remove: function(i) {
+        var arr = this.state.notes;
+        arr.splice(i, 1);
+        this.setState({notes:arr});
+    },
+    eachNote: function(note, i) {
+      return (
+          <Note key={i}
+                index={i}
+                onChange={this.update}
+                onRemove={this.remove}
+          >{note}</Note>
+      );  
+    },
+    render: function() {
+        return (<div className='board'>
+                    {this.state.notes.map(this.eachNote)}
+                <button className="btn btn-sm btn-success glyphicon glyphicon-plus"
+                onClick={this.add.bind(null, "New Note")}/>
+                </div>);
+    }
+})
+React.render(<Board count={10}/>, 
     document.getElementById('react-container'));
