@@ -2,14 +2,21 @@ var Note = React.createClass({
     getInitialState: function() {
         return {editing: false}
     },
+    componentWillMount: function() {
+        this.style = {
+            right: this.randomBetween(0, window.innerWidth - 150) + 'px',
+            top: this.randomBetween(0, window.innerHeight - 150) + 'px',
+            transform: 'rotate(' + this.randomBetween(-15, 15) + 'deg)'
+        };
+    },
+    randomBetween: function(min, max) {
+        return (min + Math.ceil(Math.random() * max));
+    },
     edit: function() {
         this.setState({editing: true});
     },
     save: function() {
-//        var val = this.refs.newText.getDOMNode().value;
-//        alert("ToDO: Save note value " + val);
-        this.props.onChange(this.refs.newText.getDOMNode().value,
-                           this.props.index);
+        this.props.onChange(this.refs.newText.getDOMNode().value, this.props.index);
         this.setState({editing: false});
     },
     remove: function() {
@@ -17,7 +24,8 @@ var Note = React.createClass({
     },
     renderDisplay: function() {
         return (
-            <div className="note">
+            <div className="note"
+                style={this.style}>
                 <p>{this.props.children}</p>
                 <span>
                     <button onClick={this.edit}
@@ -30,7 +38,7 @@ var Note = React.createClass({
     },
     renderForm: function() {
         return (
-            <div className="note">
+            <div className="note" style={this.style}>
             <textarea ref="newText" defaultValue={this.props.children} 
             className="form-control"></textarea>
             <button onClick={this.save} className="btn btn-success btn-sm glyphicon glyphicon-floppy-disk" />
@@ -50,52 +58,71 @@ var Note = React.createClass({
 var Board = React.createClass({
     propTypes: {
         count: function(props, propName) {
-            if(typeof props[propName] !== "number"){
-                return new Error("The count property must be a number");
+            if (typeof props[propName] !== "number"){
+                return new Error('The count property must be a number');
             }
-            if(props[propName] > 100){
-                return new Error('Creating ' + props[propName] + " notes is ridiculous.")
+            if (props[propName] > 100) {
+                return new Error("Creating " + props[propName] + " notes is ridiculous");
             }
         }
     },
     getInitialState: function() {
         return {
-            notes: [
-            ]
+            notes: []
         };
     },
-    
+    nextId: function() {
+        this.uniqueId = this.uniqueId || 0;
+        return this.uniqueId++;
+    },
     add: function(text) {
         var arr = this.state.notes;
-        arr.push(text);
-        this.setState({notes:arr});
+        arr.push({
+            id: this.nextId(),
+            note: text
+        });
+        this.setState({notes: arr});
     },
     update: function(newText, i) {
         var arr = this.state.notes;
-        arr[i] = newText;
+        arr[i].note = newText;
         this.setState({notes:arr});
     },
     remove: function(i) {
         var arr = this.state.notes;
         arr.splice(i, 1);
-        this.setState({notes:arr});
+        this.setState({notes: arr});
     },
     eachNote: function(note, i) {
-      return (
-          <Note key={i}
-                index={i}
-                onChange={this.update}
-                onRemove={this.remove}
-          >{note}</Note>
-      );  
+        return (
+                <Note key={note.id}
+                    index={i}
+                    onChange={this.update}
+                    onRemove={this.remove}
+                >{note.note}</Note>
+            );
     },
     render: function() {
-        return (<div className='board'>
+        return (<div className="board">
                     {this.state.notes.map(this.eachNote)}
-                <button className="btn btn-sm btn-success glyphicon glyphicon-plus"
-                onClick={this.add.bind(null, "New Note")}/>
-                </div>);
+                    <button className="btn btn-sm btn-success glyphicon glyphicon-plus"
+                            onClick={this.add.bind(null, "New Note")}/>
+            </div>
+
+        );
     }
-})
+});
+
+
 React.render(<Board count={10}/>, 
     document.getElementById('react-container'));
+
+
+
+
+
+
+
+
+
+
