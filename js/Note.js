@@ -12,6 +12,9 @@ var Note = React.createClass({
     randomBetween: function(min, max) {
         return (min + Math.ceil(Math.random() * max));
     },
+    componentDidMount: function() {
+        $(this.getDOMNode()).draggable();
+    },
     edit: function() {
         this.setState({editing: true});
     },
@@ -75,6 +78,16 @@ var Board = React.createClass({
         this.uniqueId = this.uniqueId || 0;
         return this.uniqueId++;
     },
+    componentWillMount: function() {
+      var self = this;
+        if(this.props.count) {
+            $.getJSON('http://baconipsum.com/api/?type=all-meat&sentences=' + this.props.count + '&start-with-lorem=1&callback=?', function(results) {
+                results[0].split('. ').forEach(function(sentence) {
+                    self.add(sentence.substring(0,40));
+                });
+            });
+        }
+    },
     add: function(text) {
         var arr = this.state.notes;
         arr.push({
@@ -114,7 +127,7 @@ var Board = React.createClass({
 });
 
 
-React.render(<Board count={10}/>, 
+React.render(<Board count={50}/>, 
     document.getElementById('react-container'));
 
 
