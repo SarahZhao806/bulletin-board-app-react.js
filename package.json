@@ -1,0 +1,39 @@
+{
+  "name": "bulletin-board",
+  "version": "1.0.0",
+  "description": "\"A React Application\"",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel js -d built",
+    "start": "open http://localhost:3000 & httpster -p 3000"
+  },
+  "babel": {
+    "presets": [
+      "react"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SarahZhao806/bulletin-board-app-react.js.git"
+  },
+  "keywords": [
+    "\"react\"",
+    "\"JavaScript\"",
+    "\"bulletin\"",
+    "\"board\"",
+    "\"Node.js\""
+  ],
+  "author": "Sarah Zhao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SarahZhao806/bulletin-board-app-react.js/issues"
+  },
+  "homepage": "https://github.com/SarahZhao806/bulletin-board-app-react.js#readme",
+  "devDependencies": {
+    "babel-cli": "^6.4.0",
+    "babel-preset-react": "^6.11.1"
+  },
+  "dependencies": {
+    "httpster": "^1.0.3"
+  }
+}
