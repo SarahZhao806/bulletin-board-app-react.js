@@ -20,5 +20,14 @@
 <body>
     <div id="react-container"></div>
     <script src="js/Note.js" type="text/babel" ></script>
+    <script type="text/babel">
+        var Box = React.createClass({
+            render: function() {
+                return <div></div>;
+            }
+        });
+
+    React.render(<Box></Box/>, document.getElementById("react-container"));
+    </script>
 </body>
 </html>
